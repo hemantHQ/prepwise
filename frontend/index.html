@@ -17,6 +17,7 @@
           </p>
         </div>
       </div>
+
       <aside class="sidebar" aria-label="Application navigation">
         <div class="brand">
           <span class="brand-mark">AI</span>
@@ -30,6 +31,15 @@
           <button class="nav-item" data-view="setupView">New Interview</button>
           <button class="nav-item" data-view="historyView">History</button>
         </nav>
+        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+          <span class="theme-toggle-track" aria-hidden="true">
+            <span class="theme-toggle-thumb">
+              <span class="theme-icon theme-icon-sun">L</span>
+              <span class="theme-icon theme-icon-moon">D</span>
+            </span>
+          </span>
+          <span id="themeToggleText">Light</span>
+        </button>
         <button id="logoutBtn" class="ghost-button hidden">Sign out</button>
       </aside>
 
@@ -42,9 +52,42 @@
               Generate role-based questions, answer one by one, and get scored feedback
               on confidence, clarity, technical accuracy, and communication.
             </p>
+            <div class="hero-actions">
+              <button class="primary-button compact" type="button" data-auth-target="signup">Create account</button>
+              <button class="outline-button compact" type="button" data-auth-target="login">Sign in</button>
+            </div>
+            <div class="about-panel" aria-label="About this website">
+              <div>
+                <span>About</span>
+                <strong>Interview practice built around your target role.</strong>
+              </div>
+              <p>
+                This website helps candidates rehearse HR, technical, and behavioral interviews with AI-generated
+                questions, resume-aware prompts, answer-by-answer feedback, saved history, and performance analytics.
+              </p>
+              <div class="about-grid">
+                <article>
+                  <strong>Role based</strong>
+                  <span>Questions adapt to job role, skills, and experience level.</span>
+                </article>
+                <article>
+                  <strong>Actionable feedback</strong>
+                  <span>Scores cover clarity, confidence, accuracy, and communication.</span>
+                </article>
+                <article>
+                  <strong>Progress tracking</strong>
+                  <span>Past sessions and score trends stay available in the dashboard.</span>
+                </article>
+              </div>
+            </div>
           </div>
 
           <div class="auth-card">
+            <div class="auth-card-header">
+              <span class="status-pill">Secure access</span>
+              <h2 id="authTitle">Welcome back</h2>
+              <p id="authSubtitle">Sign in to continue practicing with your saved interview history.</p>
+            </div>
             <div class="segmented" role="tablist">
               <button id="showLogin" class="active" type="button">Sign in</button>
               <button id="showSignup" type="button">Sign up</button>

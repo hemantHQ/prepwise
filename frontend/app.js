@@ -1,6 +1,7 @@
 const state = {
   token: localStorage.getItem("token"),
   user: JSON.parse(localStorage.getItem("user") || "null"),
+  theme: localStorage.getItem("theme") || "system",
   apiBaseUrl: (window.APP_CONFIG?.API_BASE_URL || "http://localhost:5000").replace(/\/$/, ""),
   backendReady: false,
   authMode: "login",
@@ -23,6 +24,9 @@ const els = {
   emailInput: document.querySelector("#emailInput"),
   passwordInput: document.querySelector("#passwordInput"),
   authMessage: document.querySelector("#authMessage"),
+  authCard: document.querySelector(".auth-card"),
+  authTitle: document.querySelector("#authTitle"),
+  authSubtitle: document.querySelector("#authSubtitle"),
   welcomeTitle: document.querySelector("#welcomeTitle"),
   setupForm: document.querySelector("#setupForm"),
   setupMessage: document.querySelector("#setupMessage"),
@@ -40,33 +44,78 @@ const els = {
   averageScore: document.querySelector("#averageScore"),
   scoreChart: document.querySelector("#scoreChart"),
   serverWakeOverlay: document.querySelector("#serverWakeOverlay"),
-  serverWakeMessage: document.querySelector("#serverWakeMessage")
+  serverWakeMessage: document.querySelector("#serverWakeMessage"),
+  themeToggle: document.querySelector("#themeToggle"),
+  themeToggleText: document.querySelector("#themeToggleText")
 };
+
+const systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
+
+function getActiveTheme() {
+  if (state.theme === "system") {
+    return systemTheme.matches ? "dark" : "light";
+  }
+  return state.theme;
+}
+
+function applyTheme() {
+  const activeTheme = getActiveTheme();
+  document.documentElement.dataset.theme = activeTheme;
+  els.themeToggle.setAttribute("aria-pressed", String(activeTheme === "dark"));
+  els.themeToggle.setAttribute("aria-label", activeTheme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  els.themeToggleText.textContent = activeTheme === "dark" ? "Dark" : "Light";
+  if (els.scoreChart) drawChart();
+}
+
+function toggleTheme() {
+  const nextTheme = getActiveTheme() === "dark" ? "light" : "dark";
+  state.theme = nextTheme;
+  localStorage.setItem("theme", nextTheme);
+  applyTheme();
+}
 
 function setWakeState(visible, message) {
   els.serverWakeOverlay.classList.toggle("hidden", !visible);
   if (message) els.serverWakeMessage.textContent = message;
 }
 
+async function checkBackendHealth(timeoutMs = 3500) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(`${state.apiBaseUrl}/api/health`, {
+      cache: "no-store",
+      signal: controller.signal
+    });
+    return response.ok;
+  } catch (error) {
+    return false;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 async function waitForBackend() {
   if (state.backendReady) return;
 
-  setWakeState(true, "Render free services can sleep after inactivity. Please wait while the backend wakes up.");
+  if (await checkBackendHealth()) {
+    state.backendReady = true;
+    setWakeState(false);
+    return;
+  }
+
+  setWakeState(true, "Backend is not responding yet. Render may be waking the service after inactivity.");
   const startedAt = Date.now();
   const maxWaitMs = 90000;
   let attempt = 0;
 
   while (Date.now() - startedAt < maxWaitMs) {
     attempt += 1;
-    try {
-      const response = await fetch(`${state.apiBaseUrl}/api/health`, { cache: "no-store" });
-      if (response.ok) {
-        state.backendReady = true;
-        setWakeState(false);
-        return;
-      }
-    } catch (error) {
-      // Render cold starts can briefly fail while the service is booting.
+    if (await checkBackendHealth(6000)) {
+      state.backendReady = true;
+      setWakeState(false);
+      return;
     }
 
     const seconds = Math.ceil((Date.now() - startedAt) / 1000);
@@ -91,11 +140,18 @@ async function api(path, options = {}) {
 
 function setAuthMode(mode) {
   state.authMode = mode;
+  els.authCard.classList.add("switching");
   els.showLogin.classList.toggle("active", mode === "login");
   els.showSignup.classList.toggle("active", mode === "signup");
   els.nameField.classList.toggle("hidden", mode === "login");
   els.authForm.querySelector(".primary-button").textContent = mode === "login" ? "Sign in" : "Create account";
+  els.authTitle.textContent = mode === "login" ? "Welcome back" : "Create your account";
+  els.authSubtitle.textContent =
+    mode === "login"
+      ? "Sign in to continue practicing with your saved interview history."
+      : "Start a practice space that remembers your interviews, feedback, and progress.";
   els.authMessage.textContent = "";
+  window.setTimeout(() => els.authCard.classList.remove("switching"), 180);
 }
 
 function showView(viewId) {
@@ -153,11 +209,18 @@ function renderDashboard() {
 function drawChart() {
   const canvas = els.scoreChart;
   const ctx = canvas.getContext("2d");
+  const styles = getComputedStyle(document.documentElement);
+  const chartBg = styles.getPropertyValue("--chart-bg").trim();
+  const chartGrid = styles.getPropertyValue("--chart-grid").trim();
+  const muted = styles.getPropertyValue("--muted").trim();
+  const primary = styles.getPropertyValue("--primary").trim();
+  const accent = styles.getPropertyValue("--accent").trim();
+  const ink = styles.getPropertyValue("--ink").trim();
   const { width, height } = canvas;
   ctx.clearRect(0, 0, width, height);
-  ctx.fillStyle = "#fbfdfb";
+  ctx.fillStyle = chartBg;
   ctx.fillRect(0, 0, width, height);
-  ctx.strokeStyle = "#dbe5de";
+  ctx.strokeStyle = chartGrid;
   ctx.lineWidth = 1;
 
   for (let i = 0; i < 5; i += 1) {
@@ -170,7 +233,7 @@ function drawChart() {
 
   const scores = state.analytics.scores || [];
   if (!scores.length) {
-    ctx.fillStyle = "#66736b";
+    ctx.fillStyle = muted;
     ctx.font = "700 18px system-ui";
     ctx.fillText("Complete an interview to see progress.", 52, height / 2);
     return;
@@ -183,7 +246,7 @@ function drawChart() {
     score
   }));
 
-  ctx.strokeStyle = "#0f7b5c";
+  ctx.strokeStyle = primary;
   ctx.lineWidth = 4;
   ctx.beginPath();
   points.forEach((point, index) => {
@@ -193,11 +256,11 @@ function drawChart() {
   ctx.stroke();
 
   points.forEach((point) => {
-    ctx.fillStyle = "#e8a321";
+    ctx.fillStyle = accent;
     ctx.beginPath();
     ctx.arc(point.x, point.y, 7, 0, Math.PI * 2);
     ctx.fill();
-    ctx.fillStyle = "#17211b";
+    ctx.fillStyle = ink;
     ctx.font = "800 13px system-ui";
     ctx.fillText(point.score, point.x - 8, point.y - 14);
   });
@@ -262,6 +325,10 @@ async function finishInterview() {
 
 els.showLogin.addEventListener("click", () => setAuthMode("login"));
 els.showSignup.addEventListener("click", () => setAuthMode("signup"));
+
+document.querySelectorAll("[data-auth-target]").forEach((button) => {
+  button.addEventListener("click", () => setAuthMode(button.dataset.authTarget));
+});
 
 els.authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -339,6 +406,11 @@ els.submitAnswerBtn.addEventListener("click", async () => {
 
 els.finishInterviewBtn.addEventListener("click", finishInterview);
 els.logoutBtn.addEventListener("click", clearSession);
+els.themeToggle.addEventListener("click", toggleTheme);
+
+systemTheme.addEventListener("change", () => {
+  if (state.theme === "system") applyTheme();
+});
 
 els.navItems.forEach((item) => {
   item.addEventListener("click", () => showView(item.dataset.view));
@@ -348,6 +420,7 @@ document.querySelectorAll("[data-view-target]").forEach((button) => {
   button.addEventListener("click", () => showView(button.dataset.viewTarget));
 });
 
+applyTheme();
 setAuthMode("login");
 waitForBackend()
   .then(() => {

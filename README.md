@@ -6,6 +6,7 @@ Responsive full-stack mock interview app using a separate HTML/CSS/JS frontend a
 
 - Sign up and sign in with JWT authentication.
 - Dashboard with interview history, analytics, and progress graph.
+- Light/dark theme toggle that defaults to the system color scheme.
 - Interview setup for job role, experience level, interview type, skills, and optional resume PDF.
 - Gemini-generated interview questions.
 - Gemini answer evaluation for confidence, clarity, technical accuracy, communication, strengths, weaknesses, and improvement tips.
