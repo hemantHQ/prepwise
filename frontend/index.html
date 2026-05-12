@@ -11,108 +11,141 @@
       <div id="serverWakeOverlay" class="wake-overlay hidden" role="status" aria-live="polite">
         <div class="wake-card">
           <div class="loader" aria-hidden="true"></div>
-          <h2>Starting interview server</h2>
-          <p id="serverWakeMessage">
-            Render free services can sleep after inactivity. Please wait while the backend wakes up.
-          </p>
+          <h2>Connecting to the interview server</h2>
+          <p id="serverWakeMessage">The backend is responding slowly. Please wait a moment.</p>
         </div>
       </div>
 
-      <aside class="sidebar" aria-label="Application navigation">
+      <header class="site-header">
         <div class="brand">
           <span class="brand-mark">AI</span>
           <div>
             <strong>Mock Interview</strong>
-            <small>Practice studio</small>
+            <small>Adaptive interview practice</small>
           </div>
         </div>
-        <nav>
+
+        <nav id="workspaceNav" class="workspace-nav hidden" aria-label="Application navigation">
           <button class="nav-item active" data-view="dashboardView">Dashboard</button>
           <button class="nav-item" data-view="setupView">New Interview</button>
           <button class="nav-item" data-view="historyView">History</button>
         </nav>
-        <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
-          <span class="theme-toggle-track" aria-hidden="true">
-            <span class="theme-toggle-thumb">
-              <span class="theme-icon theme-icon-sun">L</span>
-              <span class="theme-icon theme-icon-moon">D</span>
+
+        <div class="header-actions">
+          <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+            <span class="theme-toggle-track" aria-hidden="true">
+              <span class="theme-toggle-thumb">
+                <span class="theme-icon theme-icon-sun">L</span>
+                <span class="theme-icon theme-icon-moon">D</span>
+              </span>
             </span>
-          </span>
-          <span id="themeToggleText">Light</span>
-        </button>
-        <button id="logoutBtn" class="ghost-button hidden">Sign out</button>
-      </aside>
+            <span id="themeToggleText">Light</span>
+          </button>
+          <button id="logoutBtn" class="quiet-button hidden">Sign out</button>
+        </div>
+      </header>
 
       <main class="main-panel">
-        <section id="authView" class="auth-layout">
-          <div class="auth-copy">
-            <p class="eyebrow">AI interview readiness</p>
-            <h1>Practice smarter before the real interview.</h1>
-            <p>
-              Generate role-based questions, answer one by one, and get scored feedback
-              on confidence, clarity, technical accuracy, and communication.
-            </p>
-            <div class="hero-actions">
-              <button class="primary-button compact" type="button" data-auth-target="signup">Create account</button>
-              <button class="outline-button compact" type="button" data-auth-target="login">Sign in</button>
-            </div>
-            <div class="about-panel" aria-label="About this website">
-              <div>
-                <span>About</span>
-                <strong>Interview practice built around your target role.</strong>
-              </div>
-              <p>
-                This website helps candidates rehearse HR, technical, and behavioral interviews with AI-generated
-                questions, resume-aware prompts, answer-by-answer feedback, saved history, and performance analytics.
+        <section id="authView" class="home-shell">
+          <div class="hero-stage">
+            <div class="hero-copy">
+              <p class="eyebrow">AI mock interview platform</p>
+              <h1>Rehearse the interview before it becomes real.</h1>
+              <p class="hero-summary">
+                Practice role-specific interviews, answer realistic questions, receive structured AI feedback,
+                and track your progress across every session.
               </p>
-              <div class="about-grid">
+              <div class="hero-actions">
+                <button class="primary-button" type="button" data-auth-target="signup">Start practicing</button>
+                <button class="outline-button" type="button" data-auth-target="login">I already have an account</button>
+              </div>
+            </div>
+
+            <div class="hero-preview" aria-label="Product overview">
+              <div class="preview-bar">
+                <span>Mock session</span>
+                <strong>Technical - Frontend Developer</strong>
+              </div>
+              <div class="preview-question">
+                <span>Question 03</span>
+                <strong>How would you improve rendering performance in a complex dashboard?</strong>
+              </div>
+              <div class="preview-scores">
                 <article>
-                  <strong>Role based</strong>
-                  <span>Questions adapt to job role, skills, and experience level.</span>
+                  <span>Clarity</span>
+                  <strong>88</strong>
                 </article>
                 <article>
-                  <strong>Actionable feedback</strong>
-                  <span>Scores cover clarity, confidence, accuracy, and communication.</span>
+                  <span>Accuracy</span>
+                  <strong>91</strong>
                 </article>
                 <article>
-                  <strong>Progress tracking</strong>
-                  <span>Past sessions and score trends stay available in the dashboard.</span>
+                  <span>Communication</span>
+                  <strong>86</strong>
                 </article>
               </div>
             </div>
           </div>
 
-          <div class="auth-card">
-            <div class="auth-card-header">
-              <span class="status-pill">Secure access</span>
-              <h2 id="authTitle">Welcome back</h2>
-              <p id="authSubtitle">Sign in to continue practicing with your saved interview history.</p>
-            </div>
-            <div class="segmented" role="tablist">
-              <button id="showLogin" class="active" type="button">Sign in</button>
-              <button id="showSignup" type="button">Sign up</button>
-            </div>
-            <form id="authForm">
-              <label id="nameField">
-                Name
-                <input id="nameInput" type="text" autocomplete="name" placeholder="Your name" />
-              </label>
-              <label>
-                Email
-                <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
-              </label>
-              <label>
-                Password
-                <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Minimum 6 characters" required />
-              </label>
-              <button class="primary-button" type="submit">Continue</button>
-              <p id="authMessage" class="form-message" role="status"></p>
-            </form>
+          <div class="home-grid">
+            <section class="about-section" aria-label="About this website">
+              <div class="section-heading">
+                <p class="eyebrow">About</p>
+                <h2>Built for candidates who want useful practice, not generic prompts.</h2>
+              </div>
+              <p>
+                AI Mock Interview adapts sessions to your role, experience level, chosen interview format, skills,
+                and optional resume PDF. It evaluates each answer across confidence, clarity, technical accuracy, and
+                communication, then saves results so you can understand whether you are actually improving.
+              </p>
+              <div class="feature-strip">
+                <article>
+                  <strong>Tailored sessions</strong>
+                  <span>Questions match role, seniority, and interview type.</span>
+                </article>
+                <article>
+                  <strong>Resume aware</strong>
+                  <span>Optional PDF context helps interviews feel more personal.</span>
+                </article>
+                <article>
+                  <strong>Evidence of growth</strong>
+                  <span>History, analytics, and recent feedback stay in one dashboard.</span>
+                </article>
+              </div>
+            </section>
+
+            <aside class="auth-card">
+              <div class="auth-card-header">
+                <span class="status-pill">Secure access</span>
+                <h2 id="authTitle">Welcome back</h2>
+                <p id="authSubtitle">Sign in to continue with saved interviews and analytics.</p>
+              </div>
+              <div class="segmented" role="tablist">
+                <button id="showLogin" class="active" type="button">Sign in</button>
+                <button id="showSignup" type="button">Sign up</button>
+              </div>
+              <form id="authForm">
+                <label id="nameField">
+                  Name
+                  <input id="nameInput" type="text" autocomplete="name" placeholder="Your name" />
+                </label>
+                <label>
+                  Email
+                  <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
+                </label>
+                <label>
+                  Password
+                  <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Minimum 6 characters" required />
+                </label>
+                <button class="primary-button" type="submit">Continue</button>
+                <p id="authMessage" class="form-message" role="status"></p>
+              </form>
+            </aside>
           </div>
         </section>
 
-        <section id="dashboardView" class="view hidden">
-          <div class="topbar">
+        <section id="dashboardView" class="workspace-view view hidden">
+          <div class="workspace-heading">
             <div>
               <p class="eyebrow">Dashboard</p>
               <h2 id="welcomeTitle">Welcome back</h2>
@@ -134,9 +167,9 @@
             </article>
           </div>
           <div class="content-grid">
-            <section class="panel">
+            <section class="panel chart-panel">
               <div class="panel-header">
-                <h3>Performance</h3>
+                <h3>Performance trend</h3>
                 <span>Recent results</span>
               </div>
               <canvas id="scoreChart" width="640" height="280" aria-label="Performance graph"></canvas>
@@ -151,11 +184,11 @@
           </div>
         </section>
 
-        <section id="setupView" class="view hidden">
-          <div class="topbar">
+        <section id="setupView" class="workspace-view view hidden">
+          <div class="workspace-heading">
             <div>
               <p class="eyebrow">Interview setup</p>
-              <h2>Create a focused mock session</h2>
+              <h2>Design the next session</h2>
             </div>
           </div>
           <form id="setupForm" class="setup-grid">
@@ -194,10 +227,10 @@
           <p id="setupMessage" class="form-message" role="status"></p>
         </section>
 
-        <section id="interviewView" class="view hidden">
-          <div class="session-header">
+        <section id="interviewView" class="workspace-view view hidden">
+          <div class="workspace-heading">
             <div>
-              <p class="eyebrow">Live session</p>
+              <p class="eyebrow">Live interview</p>
               <h2 id="sessionTitle">Interview session</h2>
             </div>
             <span id="questionCounter" class="status-pill">1 / 6</span>
@@ -207,17 +240,17 @@
             <textarea id="answerInput" rows="8" placeholder="Type your answer here..."></textarea>
             <div class="action-row">
               <button id="submitAnswerBtn" class="primary-button" type="button">Submit answer</button>
-              <button id="finishInterviewBtn" class="ghost-button" type="button">Finish</button>
+              <button id="finishInterviewBtn" class="quiet-button" type="button">Finish</button>
             </div>
           </article>
           <section id="answerFeedback" class="result-panel hidden"></section>
         </section>
 
-        <section id="historyView" class="view hidden">
-          <div class="topbar">
+        <section id="historyView" class="workspace-view view hidden">
+          <div class="workspace-heading">
             <div>
               <p class="eyebrow">History</p>
-              <h2>Interview history</h2>
+              <h2>Interview records</h2>
             </div>
           </div>
           <div id="historyList" class="history-list"></div>

@@ -24,6 +24,10 @@ const allowedOrigins = (process.env.CLIENT_ORIGIN || "")
   .map((origin) => origin.trim())
   .filter(Boolean);
 
+app.get("/api/health", cors({ origin: true }), (req, res) => {
+  res.json({ ok: true, service: "ai-mock-interview-api" });
+});
+
 app.use(
   cors({
     origin(origin, callback) {
@@ -211,10 +215,6 @@ function buildFinalReport(interview) {
     completedAt: new Date()
   };
 }
-
-app.get("/api/health", (req, res) => {
-  res.json({ ok: true, service: "ai-mock-interview-api" });
-});
 
 app.get("/", (req, res) => {
   res.json({

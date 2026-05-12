@@ -15,6 +15,7 @@ const els = {
   authView: document.querySelector("#authView"),
   views: document.querySelectorAll(".view"),
   navItems: document.querySelectorAll(".nav-item"),
+  workspaceNav: document.querySelector("#workspaceNav"),
   logoutBtn: document.querySelector("#logoutBtn"),
   showLogin: document.querySelector("#showLogin"),
   showSignup: document.querySelector("#showSignup"),
@@ -159,6 +160,7 @@ function showView(viewId) {
   els.authView.classList.toggle("hidden", loggedIn);
   els.views.forEach((view) => view.classList.toggle("hidden", view.id !== viewId || !loggedIn));
   els.navItems.forEach((item) => item.classList.toggle("active", item.dataset.view === viewId));
+  els.workspaceNav.classList.toggle("hidden", !loggedIn);
   els.logoutBtn.classList.toggle("hidden", !loggedIn);
 }
 
@@ -422,14 +424,13 @@ document.querySelectorAll("[data-view-target]").forEach((button) => {
 
 applyTheme();
 setAuthMode("login");
-waitForBackend()
-  .then(() => {
-    if (state.token) {
-      return loadDashboard().then(() => showView("dashboardView"));
-    }
-    showView("dashboardView");
-  })
-  .catch((error) => {
-    els.authMessage.textContent = error.message;
-    showView("dashboardView");
-  });
+if (state.token) {
+  loadDashboard()
+    .then(() => showView("dashboardView"))
+    .catch((error) => {
+      els.authMessage.textContent = error.message;
+      clearSession();
+    });
+} else {
+  showView("dashboardView");
+}
