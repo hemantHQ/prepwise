@@ -11,7 +11,7 @@ Responsive full-stack mock interview app using a separate HTML/CSS/JS frontend a
 - Gemini answer evaluation for confidence, clarity, technical accuracy, communication, strengths, weaknesses, and improvement tips.
 - MongoDB persistence for users, sessions, answers, and final reports.
 - GitHub Pages deployment workflow in `.github/workflows/deploy-frontend.yml`.
-- Render deployment blueprint in `render.yml`.
+- Render deployment blueprint in `render.yaml`.
 
 ## Local Setup
 
@@ -20,7 +20,7 @@ Responsive full-stack mock interview app using a separate HTML/CSS/JS frontend a
 ```text
 frontend/   Static GitHub Pages app
 backend/    Render-hosted API
-render.yml  Render blueprint for backend
+render.yaml Render blueprint for backend
 ```
 
 ## Local Setup
