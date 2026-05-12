@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Mock Interview</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <div id="serverWakeOverlay" class="wake-overlay hidden" role="status" aria-live="polite">
+        <div class="wake-card">
+          <div class="loader" aria-hidden="true"></div>
+          <h2>Starting interview server</h2>
+          <p id="serverWakeMessage">
+            Render free services can sleep after inactivity. Please wait while the backend wakes up.
+          </p>
+        </div>
+      </div>
+      <aside class="sidebar" aria-label="Application navigation">
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <div>
+            <strong>Mock Interview</strong>
+            <small>Practice studio</small>
+          </div>
+        </div>
+        <nav>
+          <button class="nav-item active" data-view="dashboardView">Dashboard</button>
+          <button class="nav-item" data-view="setupView">New Interview</button>
+          <button class="nav-item" data-view="historyView">History</button>
+        </nav>
+        <button id="logoutBtn" class="ghost-button hidden">Sign out</button>
+      </aside>
+
+      <main class="main-panel">
+        <section id="authView" class="auth-layout">
+          <div class="auth-copy">
+            <p class="eyebrow">AI interview readiness</p>
+            <h1>Practice smarter before the real interview.</h1>
+            <p>
+              Generate role-based questions, answer one by one, and get scored feedback
+              on confidence, clarity, technical accuracy, and communication.
+            </p>
+          </div>
+
+          <div class="auth-card">
+            <div class="segmented" role="tablist">
+              <button id="showLogin" class="active" type="button">Sign in</button>
+              <button id="showSignup" type="button">Sign up</button>
+            </div>
+            <form id="authForm">
+              <label id="nameField">
+                Name
+                <input id="nameInput" type="text" autocomplete="name" placeholder="Your name" />
+              </label>
+              <label>
+                Email
+                <input id="emailInput" type="email" autocomplete="email" placeholder="you@example.com" required />
+              </label>
+              <label>
+                Password
+                <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Minimum 6 characters" required />
+              </label>
+              <button class="primary-button" type="submit">Continue</button>
+              <p id="authMessage" class="form-message" role="status"></p>
+            </form>
+          </div>
+        </section>
+
+        <section id="dashboardView" class="view hidden">
+          <div class="topbar">
+            <div>
+              <p class="eyebrow">Dashboard</p>
+              <h2 id="welcomeTitle">Welcome back</h2>
+            </div>
+            <button class="primary-button compact" data-view-target="setupView">Start interview</button>
+          </div>
+          <div class="metric-grid">
+            <article class="metric">
+              <span>Total sessions</span>
+              <strong id="totalSessions">0</strong>
+            </article>
+            <article class="metric">
+              <span>Completed</span>
+              <strong id="completedSessions">0</strong>
+            </article>
+            <article class="metric">
+              <span>Average score</span>
+              <strong id="averageScore">0</strong>
+            </article>
+          </div>
+          <div class="content-grid">
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Performance</h3>
+                <span>Recent results</span>
+              </div>
+              <canvas id="scoreChart" width="640" height="280" aria-label="Performance graph"></canvas>
+            </section>
+            <section class="panel">
+              <div class="panel-header">
+                <h3>Latest feedback</h3>
+                <span>Saved results</span>
+              </div>
+              <div id="latestFeedback" class="feedback-list"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="setupView" class="view hidden">
+          <div class="topbar">
+            <div>
+              <p class="eyebrow">Interview setup</p>
+              <h2>Create a focused mock session</h2>
+            </div>
+          </div>
+          <form id="setupForm" class="setup-grid">
+            <label>
+              Job role
+              <input id="roleInput" type="text" placeholder="Frontend Developer, Data Analyst..." required />
+            </label>
+            <label>
+              Experience level
+              <select id="experienceInput" required>
+                <option value="">Select level</option>
+                <option>Fresher</option>
+                <option>Junior</option>
+                <option>Mid-level</option>
+                <option>Senior</option>
+              </select>
+            </label>
+            <label>
+              Interview type
+              <select id="typeInput" required>
+                <option>HR</option>
+                <option>Technical</option>
+                <option>Behavioral</option>
+              </select>
+            </label>
+            <label>
+              Skills
+              <input id="skillsInput" type="text" placeholder="JavaScript, React, MongoDB" />
+            </label>
+            <label class="file-input">
+              Resume PDF optional
+              <input id="resumeInput" type="file" accept="application/pdf" />
+            </label>
+            <button class="primary-button" type="submit">Generate questions</button>
+          </form>
+          <p id="setupMessage" class="form-message" role="status"></p>
+        </section>
+
+        <section id="interviewView" class="view hidden">
+          <div class="session-header">
+            <div>
+              <p class="eyebrow">Live session</p>
+              <h2 id="sessionTitle">Interview session</h2>
+            </div>
+            <span id="questionCounter" class="status-pill">1 / 6</span>
+          </div>
+          <article class="question-panel">
+            <h3 id="questionText">Question appears here</h3>
+            <textarea id="answerInput" rows="8" placeholder="Type your answer here..."></textarea>
+            <div class="action-row">
+              <button id="submitAnswerBtn" class="primary-button" type="button">Submit answer</button>
+              <button id="finishInterviewBtn" class="ghost-button" type="button">Finish</button>
+            </div>
+          </article>
+          <section id="answerFeedback" class="result-panel hidden"></section>
+        </section>
+
+        <section id="historyView" class="view hidden">
+          <div class="topbar">
+            <div>
+              <p class="eyebrow">History</p>
+              <h2>Interview history</h2>
+            </div>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
+      </main>
+    </div>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
